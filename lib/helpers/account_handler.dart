@@ -4,7 +4,8 @@ import './client.dart';
 
 class AccountHandler with ChangeNotifier {
   List<dynamic> _users = [];
-  // String _activeUser = '';
+  List<Map<String, dynamic>> _userSessionData = [];
+  String _activeUser = '';
   bool _isConnectedToServer = false;
   String _ip;
   var _port;
@@ -17,13 +18,17 @@ class AccountHandler with ChangeNotifier {
     return _isConnectedToServer;
   }
 
-  // String get activeUser {
-  //   return _activeUser;
-  // }
+  List<Map<String, dynamic>> get userSessionData {
+    return [..._userSessionData];
+  }
 
-  // void setActiveAccount(String username) {
-  //   _activeUser = username;
-  // }
+  String get activeUser {
+    return _activeUser;
+  }
+
+  void setActiveUser() {
+    _activeUser = _users[0];
+  }
 
   Future<void> createAcc({
     @required String username,
@@ -146,14 +151,12 @@ class AccountHandler with ChangeNotifier {
     }
   }
 
-  Future<Map> fetchSessionData({
+  Future<void> fetchSessionData({
     @required BuildContext context,
-    @required String username,
   }) async {
-    Map sessionData = {};
     Map payload = {
       'command': 'fetchSessionData',
-      'username': username,
+      'username': _activeUser,
     };
 
     Map response = await request(
@@ -161,8 +164,8 @@ class AccountHandler with ChangeNotifier {
       ip: _ip,
       port: _port,
     );
-    if (response['data']) {
-      sessionData = response;
+    if (response['data'].isNotEmpty) {
+      _userSessionData.addAll(response['data']);
     } else {
       Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -170,7 +173,6 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
-    return sessionData;
   }
 
   Future<void> triggerSessionActivity({

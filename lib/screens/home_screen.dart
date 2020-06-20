@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:instanaut/helpers/account_handler.dart';
-import 'package:provider/provider.dart';
 
 import '../screens/add_account_screen.dart';
 import '../screens/add_work_screen.dart';
+import '../screens/sessions_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home-screen';
@@ -19,9 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final _pages = <Widget>[
       AddWorkScreen(),
-      Center(
-        child: Card(),
-      ),
+      SessionsScreen(),
     ];
 
     final _navItems = <BottomNavigationBarItem>[

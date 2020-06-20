@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:instanaut/helpers/account_handler.dart';
 import 'package:provider/provider.dart';
+
+import '../helpers/account_handler.dart';
 
 class AddWorkScreen extends StatefulWidget {
   @override
@@ -8,22 +9,6 @@ class AddWorkScreen extends StatefulWidget {
 }
 
 class _AddWorkScreenState extends State<AddWorkScreen> {
-  @override
-  void didChangeDependencies() {
-    _isLoading = true;
-    if (_isInit) {
-      Provider.of<AccountHandler>(context, listen: false)
-          .fetchAllUsers()
-          .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
@@ -39,6 +24,23 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   bool _stLocationStatus = false;
   bool _massStrory = false;
 
+  @override
+  void didChangeDependencies() {
+    _isLoading = true;
+    if (_isInit) {
+      Provider.of<AccountHandler>(context, listen: false)
+          .fetchAllUsers()
+          .then((_) {
+        Provider.of<AccountHandler>(context, listen: false).setActiveUser();
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   Future<void> _tryStartSession() async {
     setState(() {
       _isLoading = true;
@@ -46,8 +48,8 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
     final isValid = _formKey.currentState.validate();
     if (isValid) {
       _formKey.currentState.save();
-      final _users = Provider.of<AccountHandler>(context, listen: false).users;
-      final _user = _users[0];
+      final _user =
+          Provider.of<AccountHandler>(context, listen: false).activeUser;
       FocusScope.of(context).unfocus();
       await Provider.of<AccountHandler>(context, listen: false).createSession(
         context: context,
@@ -208,7 +210,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                       if (value.isEmpty) {
                                         return 'Please enter a Hashtag.';
                                       }
-                                      if (value.startsWith(
+                                      if (!value.startsWith(
                                           'https://www.instagram.com/')) {
                                         return 'Please enter proper URL';
                                       }
@@ -322,12 +324,15 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                 decoration:
                                     InputDecoration(labelText: 'Location URL'),
                                 onSaved: (value) {
-                                  _hashTag = value;
+                                  _url = value;
                                 },
                                 validator: (value) {
                                   if (!value.startsWith(
                                       'https://www.instagram.com/')) {
                                     return 'Please enter proper URL';
+                                  }
+                                  if (value.isEmpty) {
+                                    return 'Please enter a URL';
                                   }
                                   return null;
                                 },
