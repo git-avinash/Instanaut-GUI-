@@ -4,9 +4,10 @@ import './client.dart';
 
 class AccountHandler with ChangeNotifier {
   List<dynamic> _users = [];
-  List<Map<String, dynamic>> _userSessionData = [];
+  List<dynamic> _userSessionData = [];
   String _activeUser = '';
   bool _isConnectedToServer = false;
+  bool _setDefault = true;
   String _ip;
   var _port;
 
@@ -18,7 +19,7 @@ class AccountHandler with ChangeNotifier {
     return _isConnectedToServer;
   }
 
-  List<Map<String, dynamic>> get userSessionData {
+  List<dynamic> get userSessionData {
     return [..._userSessionData];
   }
 
@@ -26,8 +27,21 @@ class AccountHandler with ChangeNotifier {
     return _activeUser;
   }
 
-  void setActiveUser() {
-    _activeUser = _users[0];
+  void setDefaultUser() {
+    if (_users.isEmpty) {
+      _activeUser = '';
+    }
+    if (_users.isNotEmpty) {
+      if (_setDefault) {
+        _activeUser = _users[0];
+        _setDefault = false;
+      }
+    }
+  }
+
+  void setActiveUser(String user) {
+    _activeUser = user;
+    notifyListeners();
   }
 
   Future<void> createAcc({
@@ -61,7 +75,9 @@ class AccountHandler with ChangeNotifier {
           backgroundColor: Theme.of(context).accentColor,
         ),
       );
+      Navigator.of(context).pop();
     }
+    notifyListeners();
   }
 
   Future<void> connect({
@@ -147,6 +163,7 @@ class AccountHandler with ChangeNotifier {
     if (response['user_data'].isNotEmpty) {
       List<dynamic> data = response['user_data'];
       print('PRINTING DATA: $data');
+      _users = [];
       _users.addAll(data);
     }
   }
@@ -159,13 +176,15 @@ class AccountHandler with ChangeNotifier {
       'username': _activeUser,
     };
 
-    Map response = await request(
+    Map<String, dynamic> response = await request(
       requestJson: payload,
       ip: _ip,
       port: _port,
     );
     if (response['data'].isNotEmpty) {
-      _userSessionData.addAll(response['data']);
+      List<dynamic> data = response['data'];
+      _userSessionData = [];
+      _userSessionData.addAll(data);
     } else {
       Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -173,18 +192,20 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 
   Future<void> triggerSessionActivity({
     @required BuildContext context,
     @required String username,
-    @required bool workingStatus,
+    @required int workingStatus,
     @required String key,
   }) async {
     Map payload = {
       'command': 'triggerSessionActivity',
       'username': username,
       'key': key,
+      'working_status': workingStatus,
     };
     Map response = await request(
       requestJson: payload,
@@ -206,6 +227,7 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 
   Future<void> deleteAccount({

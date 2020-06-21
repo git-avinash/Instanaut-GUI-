@@ -5,7 +5,6 @@ import './screens/home_screen.dart';
 import './screens/add_account_screen.dart';
 import './screens/connect_server_screen.dart';
 import './helpers/account_handler.dart';
-import './screens/add_work_screen.dart';
 
 void main() => runApp(MyApp());
 
