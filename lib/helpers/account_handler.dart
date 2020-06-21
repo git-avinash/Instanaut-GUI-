@@ -148,6 +148,7 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 
   Future<void> fetchAllUsers() async {
@@ -166,15 +167,16 @@ class AccountHandler with ChangeNotifier {
       _users = [];
       _users.addAll(data);
     }
+    notifyListeners();
   }
 
-  Future<void> fetchSessionData({
-    @required BuildContext context,
-  }) async {
+  Future<void> fetchSessionData() async {
     Map payload = {
       'command': 'fetchSessionData',
       'username': _activeUser,
     };
+
+    _userSessionData = [];
 
     Map<String, dynamic> response = await request(
       requestJson: payload,
@@ -183,14 +185,9 @@ class AccountHandler with ChangeNotifier {
     );
     if (response['data'].isNotEmpty) {
       List<dynamic> data = response['data'];
-      _userSessionData = [];
       _userSessionData.addAll(data);
     } else {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Some error occured!'),
-        ),
-      );
+      return;
     }
     notifyListeners();
   }
@@ -259,6 +256,7 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 
   Future<void> deleteSession({
@@ -291,5 +289,6 @@ class AccountHandler with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 }

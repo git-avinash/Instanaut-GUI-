@@ -29,9 +29,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   void didChangeDependencies() {
     _isLoading = true;
     if (_isInit) {
-      Provider.of<AccountHandler>(context, listen: false)
-          .fetchAllUsers()
-          .then((_) {
+      Provider.of<AccountHandler>(context).fetchAllUsers().then((_) {
         Provider.of<AccountHandler>(context, listen: false).setDefaultUser();
         setState(() {
           _isLoading = false;
@@ -80,41 +78,79 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
           children: [
             Consumer<AccountHandler>(
               builder: (ctx, data, _) => Card(
+                margin: EdgeInsets.all(15),
+                elevation: 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
-                      child: Text('Active User'),
-                    ),
-                    RaisedButton(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                       child: Text(
-                        data.users.isEmpty ? 'Add Account' : data.activeUser,
+                        'Active User',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      onPressed: () {
-                        if (data.users.isNotEmpty) {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (ctx) => Container(
-                              height: 300,
-                              child: ListView.builder(
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        child: Text(
+                          data.users.isEmpty ? 'Add Account' : data.activeUser,
+                        ),
+                        onPressed: () {
+                          if (data.users.isNotEmpty) {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (ctx) => ListView.builder(
                                 itemCount: data.users.length,
-                                itemBuilder: (ctx, index) => RaisedButton(
-                                  child: Text(data.users[index]),
-                                  onPressed: () {
-                                    data.setActiveUser(data.users[index]);
-                                    Navigator.pop(context);
-                                  },
+                                itemBuilder: (ctx, index) => ListTile(
+                                  leading: IconButton(
+                                      icon: data.activeUser == data.users[index]
+                                          ? Icon(Icons.check_circle)
+                                          : Icon(Icons.toll),
+                                      onPressed: () {
+                                        data.setActiveUser(data.users[index]);
+                                      }),
+                                  title: Text(
+                                    data.users[index],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      await data.deleteAccount(
+                                        context: context,
+                                        username: data.users[index],
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }
-                        if (data.users.isEmpty) {
-                          Navigator.of(context).pushNamed(
-                            AddAccountScreen.routeName,
-                          );
-                        }
-                      },
+                            );
+                          }
+                          if (data.users.isEmpty) {
+                            Navigator.of(context)
+                                .pushNamed(
+                              AddAccountScreen.routeName,
+                            )
+                                .then((_) {
+                              setState(() {
+                                print('!!!');
+                              });
+                            });
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),

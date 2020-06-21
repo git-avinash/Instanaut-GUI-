@@ -13,7 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: AccountHandler()),
+        ChangeNotifierProvider<AccountHandler>(
+          create: (context) => AccountHandler(),
+        ),
       ],
       child: Consumer<AccountHandler>(
         builder: (ctx, status, _) => MaterialApp(
@@ -41,8 +43,6 @@ class MyApp extends StatelessWidget {
           // home: HomeScreen(),
           home: status.isConnected ? HomeScreen() : ConnectToServerScreen(),
           routes: {
-            // HomeScreen.routeName: (ctx) => HomeScreen(),
-            // ConnectToServerScreen.routeName: (ctx) => ConnectToServerScreen(),
             AddAccountScreen.routeName: (ctx) => AddAccountScreen(),
           },
         ),

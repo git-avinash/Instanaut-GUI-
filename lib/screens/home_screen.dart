@@ -82,13 +82,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 value: 'Help',
               ),
+              DropdownMenuItem(
+                child: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.bubble_chart),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text('About'),
+                    ],
+                  ),
+                ),
+                value: 'About',
+              )
             ],
             onChanged: (itemIdentifier) {
               if (itemIdentifier == 'AddAccount') {
-                Navigator.of(context).pushNamed(AddAccountScreen.routeName);
+                Navigator.of(context)
+                    .pushNamed(AddAccountScreen.routeName)
+                    .then((_) {
+                  setState(() {
+                    print('!!!');
+                  });
+                });
               }
               if (itemIdentifier == 'Help') {
                 // ...
+              }
+              if (itemIdentifier == 'About') {
+                showAboutDialog(
+                  context: context,
+                  applicationName: 'Instanaut',
+                  applicationVersion: '1.0.0+1',
+                  applicationLegalese:
+                      'Copyright 2020 Avinash S Sah SPDX-License-Identifier: Apache-2.0',
+                );
               }
             },
           ),
