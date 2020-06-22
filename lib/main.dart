@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/home_screen.dart';
 import './screens/add_account_screen.dart';
 import './screens/connect_server_screen.dart';
+import './screens/help_screen.dart';
 import './helpers/account_handler.dart';
 
 void main() => runApp(MyApp());
@@ -40,10 +41,10 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          // home: HomeScreen(),
           home: status.isConnected ? HomeScreen() : ConnectToServerScreen(),
           routes: {
             AddAccountScreen.routeName: (ctx) => AddAccountScreen(),
+            HelpScreen.routeName: (ctx) => HelpScreen(),
           },
         ),
       ),

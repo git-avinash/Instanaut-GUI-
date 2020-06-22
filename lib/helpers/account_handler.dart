@@ -75,6 +75,7 @@ class AccountHandler with ChangeNotifier {
           backgroundColor: Theme.of(context).accentColor,
         ),
       );
+      _setDefault = true;
       Navigator.of(context).pop();
     }
     notifyListeners();
@@ -242,6 +243,7 @@ class AccountHandler with ChangeNotifier {
     );
 
     if (response['status'] == 'success') {
+      Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text('Account deleted successfully'),
@@ -275,6 +277,7 @@ class AccountHandler with ChangeNotifier {
     );
 
     if (response['status'] == 'success') {
+      Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text('Session deleted successfully'),

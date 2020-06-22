@@ -31,9 +31,9 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
     if (_isInit) {
       Provider.of<AccountHandler>(context).fetchAllUsers().then((_) {
         Provider.of<AccountHandler>(context, listen: false).setDefaultUser();
-        setState(() {
-          _isLoading = false;
-        });
+      });
+      setState(() {
+        _isLoading = false;
       });
     }
     _isInit = false;
@@ -63,6 +63,18 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
         stStatusHashtag: _stHashTagStatus,
         stStatusLocation: _stLocationStatus,
       );
+      setState(() {
+        _likeStatus = false;
+        _hashTagStatus = false;
+        _hashTag = '';
+        _commentStatus = false;
+        _commentMsg = [];
+        _urlStatus = false;
+        _url = '';
+        _stHashTagStatus = false;
+        _stLocationStatus = false;
+        _massStrory = false;
+      });
     }
     setState(() {
       _isLoading = false;
@@ -112,8 +124,15 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                 itemBuilder: (ctx, index) => ListTile(
                                   leading: IconButton(
                                       icon: data.activeUser == data.users[index]
-                                          ? Icon(Icons.check_circle)
-                                          : Icon(Icons.toll),
+                                          ? Icon(
+                                              Icons.check_circle,
+                                              color: Colors.green,
+                                            )
+                                          : Icon(
+                                              Icons.toll,
+                                              color:
+                                                  Theme.of(context).accentColor,
+                                            ),
                                       onPressed: () {
                                         data.setActiveUser(data.users[index]);
                                       }),
@@ -139,15 +158,9 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                             );
                           }
                           if (data.users.isEmpty) {
-                            Navigator.of(context)
-                                .pushNamed(
+                            Navigator.of(context).pushNamed(
                               AddAccountScreen.routeName,
-                            )
-                                .then((_) {
-                              setState(() {
-                                print('!!!');
-                              });
-                            });
+                            );
                           }
                         },
                       ),

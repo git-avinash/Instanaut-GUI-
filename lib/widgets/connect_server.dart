@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../helpers/account_handler.dart';
 
@@ -48,6 +50,10 @@ class _ConnectToServerState extends State<ConnectToServer> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: Image.asset('assets/images/InstanautBanner.png'),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: 'IP Address',
@@ -100,6 +106,34 @@ class _ConnectToServerState extends State<ConnectToServer> {
                       child: Text('Login'),
                       onPressed: _tryConnect,
                     ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Linkify(
+                    text: 'GitHub: https://github.com/git-avinash',
+                    linkStyle: TextStyle(color: Colors.blue),
+                    onOpen: (link) async {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        throw 'Could not launch $link';
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Linkify(
+                    text: 'Instagram: https://www.instagram.com/_avi.exe',
+                    linkStyle: TextStyle(color: Colors.blue),
+                    onOpen: (link) async {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        throw 'Could not launch $link';
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

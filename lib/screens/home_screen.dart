@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/add_account_screen.dart';
 import '../screens/add_work_screen.dart';
 import '../screens/sessions_screen.dart';
+import '../screens/help_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home-screen';
@@ -97,18 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 'About',
               )
             ],
-            onChanged: (itemIdentifier) {
+            onChanged: (itemIdentifier) async {
               if (itemIdentifier == 'AddAccount') {
-                Navigator.of(context)
-                    .pushNamed(AddAccountScreen.routeName)
-                    .then((_) {
-                  setState(() {
-                    print('!!!');
-                  });
-                });
+                await Navigator.of(context)
+                    .pushNamed(AddAccountScreen.routeName);
               }
               if (itemIdentifier == 'Help') {
-                // ...
+                Navigator.of(context).pushNamed(HelpScreen.routeName);
               }
               if (itemIdentifier == 'About') {
                 showAboutDialog(

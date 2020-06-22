@@ -47,6 +47,10 @@ class _AddAccountState extends State<AddAccount> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: Image.asset('assets/images/InstanautBanner.png'),
+                  ),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Instagram Username',
